@@ -25,8 +25,6 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 });
 
 var day_names = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
-var temperature_updated = false;
-var weather_updated = false;
 
 function get_time() {
 	let date = new Date();
@@ -39,7 +37,6 @@ function get_time() {
 		get_date();
 		get_temperature();
 		get_weather();
-		update_title();
 	}
 
 	HH = (HH < 10) ? '0' + HH : HH;
@@ -49,6 +46,8 @@ function get_time() {
 	let time = HH + ':' + mm + ':' + ss;
 
 	document.querySelector('#time').textContent = time;
+
+	update_title();
 }
 
 function get_date() {
@@ -65,8 +64,6 @@ function get_date() {
 }
 
 function get_temperature() {
-	temperature_updated = false;
-
 	fetch('https://corsproxy.io/?' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + auth['sensibo_device'] + '/measurements?apiKey=' + auth['sensibo_api_key']), {
 		'method': 'GET',
 		'cache': 'no-store'
@@ -82,8 +79,6 @@ function get_temperature() {
 		if (data['status'] == 'success') {
 			document.querySelector('#temperature').textContent = data['result'][0]['temperature'] + ' °C';
 		}
-
-		temperature_updated = true;
 	})
 	.catch((error) => {
 		console.log(error);
@@ -91,8 +86,6 @@ function get_temperature() {
 }
 
 function get_weather() {
-	weather_updated = false;
-
 	fetch('https://api.openweathermap.org/data/2.5/weather?id=' + auth['openweathermap_city_id'] + '&units=metric&lang=en&appid=' + auth['openweathermap_api_key'], {
 		'method': 'GET',
 		'cache': 'no-store'
@@ -109,8 +102,6 @@ function get_weather() {
 			document.querySelector('#weather').textContent = parseFloat(data['main']['temp'].toFixed(1)) + ' °C';
 			document.querySelector('#weather-icon').innerHTML = '<img src="https://openweathermap.org/img/wn/' + data['weather'][0]['icon'] + '@2x.png">';
 		}
-
-		weather_updated = true;
 	})
 	.catch((error) => {
 		console.log(error);
@@ -118,11 +109,5 @@ function get_weather() {
 }
 
 function update_title() {
-	if (temperature_updated && weather_updated) {
-		document.title = 'Smart Panel - ' + document.querySelector('#temperature').textContent + ' • ' + document.querySelector('#weather').textContent;
-	} else {
-		setTimeout(() => {
-			update_title();
-		}, 1000);
-	}
+	document.title = 'Smart Panel - ' + document.querySelector('#date').textContent + ' ' + document.querySelector('#time').textContent + ' • ' + document.querySelector('#temperature').textContent + ' • ' + document.querySelector('#weather').textContent;
 }
