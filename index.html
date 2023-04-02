@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Smart Panel</title>
+		<meta name="description" content="Smart Panel.">
+		<meta name="author" content="Adam777">
+		<meta name="theme-color" content="#fff">
+		<link rel="icon" type="image/png" href="./assets/images/icon.png">
+		<meta property="og:image" content="./assets/images/icon.png">
+
+		<link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+		<link rel="stylesheet" href="./assets/css/bootstrap-icons.min.css">
+		<link rel="stylesheet" href="./assets/css/style.min.css">
+
+		<script src="./assets/js/bootstrap.bundle.min.js"></script>
+		<script src="./auth.js"></script>
+		<script src="./assets/js/script.min.js"></script>
+	</head>
+	<body>
+		<div class="container vh-100 d-flex justify-content-center align-items-center">
+			<div class="row">
+				<div class="col">
+					<div id="time"></div>
+					<div class="d-flex justify-content-center align-items-baseline">
+						<span id="date"></span> <span id="day" class="ms-4"></span>
+					</div>
+					<div class="d-flex justify-content-between align-items-end">
+						<div class="d-flex justify-content-center align-items-baseline">
+							<span id="temperature"></span> <span><span id="weather" class="ms-4"></span> <span id="weather-icon"></span></span>
+						</div>
+						<div>
+							<button type="button" id="light-on"><i class="bi bi-lightbulb"></i></button>
+							<button type="button" id="light-off"><i class="bi bi-lightbulb-off"></i></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
