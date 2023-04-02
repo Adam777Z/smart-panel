@@ -8,7 +8,7 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 	setInterval(() => { get_time(); }, 1000);
 
 	document.querySelector('#light-on').addEventListener('click', (event) => {
-		fetch('http://' + auth['light_ip'] + '/cm?cmnd=Power%20on&user=admin&password=' + auth['light_password'], {
+		fetch('http://' + config['light_ip'] + '/cm?cmnd=Power%20on&user=admin&password=' + config['light_password'], {
 			'method': 'GET',
 			'cache': 'no-store',
 			'mode': 'no-cors'
@@ -16,7 +16,7 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 	});
 
 	document.querySelector('#light-off').addEventListener('click', (event) => {
-		fetch('http://' + auth['light_ip'] + '/cm?cmnd=Power%20off&user=admin&password=' + auth['light_password'], {
+		fetch('http://' + config['light_ip'] + '/cm?cmnd=Power%20off&user=admin&password=' + config['light_password'], {
 			'method': 'GET',
 			'cache': 'no-store',
 			'mode': 'no-cors'
@@ -64,7 +64,7 @@ function get_date() {
 }
 
 function get_temperature() {
-	fetch('https://corsproxy.io/?' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + auth['sensibo_device'] + '/measurements?apiKey=' + auth['sensibo_api_key']), {
+	fetch('https://corsproxy.io/?' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/measurements?apiKey=' + config['sensibo_api_key']), {
 		'method': 'GET',
 		'cache': 'no-store'
 	})
@@ -86,7 +86,7 @@ function get_temperature() {
 }
 
 function get_weather() {
-	fetch('https://api.openweathermap.org/data/2.5/weather?id=' + auth['openweathermap_city_id'] + '&units=metric&lang=en&appid=' + auth['openweathermap_api_key'], {
+	fetch('https://api.openweathermap.org/data/2.5/weather?id=' + config['openweathermap_city_id'] + '&units=metric&lang=en&appid=' + config['openweathermap_api_key'], {
 		'method': 'GET',
 		'cache': 'no-store'
 	})
