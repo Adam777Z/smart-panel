@@ -7,16 +7,8 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 
 	setInterval(() => { get_time(); }, 1000);
 
-	document.querySelector('#light-on').addEventListener('click', (event) => {
-		fetch('http://' + config['light_ip'] + '/cm?cmnd=Power%20on&user=admin&password=' + config['light_password'], {
-			'method': 'GET',
-			'cache': 'no-store',
-			'mode': 'no-cors'
-		});
-	});
-
-	document.querySelector('#light-off').addEventListener('click', (event) => {
-		fetch('http://' + config['light_ip'] + '/cm?cmnd=Power%20off&user=admin&password=' + config['light_password'], {
+	document.querySelector('#light-toggle').addEventListener('click', (event) => {
+		fetch('http://' + config['light_ip'] + '/cm?cmnd=Power%20toggle&user=admin&password=' + config['light_password'], {
 			'method': 'GET',
 			'cache': 'no-store',
 			'mode': 'no-cors'
