@@ -31,9 +31,17 @@ function get_time() {
 		get_weather();
 	}
 
-	HH = (HH < 10 && HH !== 0) ? '0' + HH : HH;
-	mm = (mm < 10) ? '0' + mm : mm;
-	ss = (ss < 10) ? '0' + ss : ss;
+	if (HH < 10 && HH !== 0) {
+		HH = '0' + HH;
+	}
+
+	if (mm < 10) {
+		mm = '0' + mm;
+	}
+
+	if (ss < 10) {
+		ss = '0' + ss;
+	}
 
 	let time = HH + ':' + mm + ':' + ss;
 
