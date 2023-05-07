@@ -31,7 +31,7 @@ function get_time() {
 		get_weather();
 	}
 
-	HH = (HH < 10) ? '0' + HH : HH;
+	HH = (HH < 10 && HH !== 0) ? '0' + HH : HH;
 	mm = (mm < 10) ? '0' + mm : mm;
 	ss = (ss < 10) ? '0' + ss : ss;
 
