@@ -31,9 +31,9 @@ function get_time() {
 		get_weather();
 	}
 
-	if (HH < 10 && HH !== 0) {
+	/* if (HH < 10 && HH !== 0) {
 		HH = '0' + HH;
-	}
+	} */
 
 	if (mm < 10) {
 		mm = '0' + mm;
