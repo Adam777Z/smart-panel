@@ -1,4 +1,8 @@
 document.addEventListener( 'DOMContentLoaded', (event) => {
+	document.querySelector('#time').addEventListener('click', (event) => {
+		toggleFullScreen();
+	});
+
 	get_time();
 	get_date();
 	get_temperature();
@@ -17,6 +21,14 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 });
 
 var day_names = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
+
+function toggleFullScreen() {
+	if (!document.fullscreenElement && document.querySelector('body').requestFullscreen) {
+		document.querySelector('body').requestFullscreen();
+	} else if (document.exitFullscreen) {
+		document.exitFullscreen();
+	}
+}
 
 function get_time() {
 	let date = new Date();
