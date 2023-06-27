@@ -43,9 +43,7 @@ function get_time() {
 		get_weather();
 	}
 
-	// if (HH < 10 && HH !== 0) {
 	if (HH < 10) {
-		// HH = '0' + HH;
 		HH = '<span class="transparent">0</span>' + HH;
 	}
 
@@ -59,7 +57,6 @@ function get_time() {
 
 	let time = HH + ':' + mm + ':' + ss;
 
-	// document.querySelector('#time').textContent = time;
 	document.querySelector('#time').innerHTML = time;
 
 	update_title();
