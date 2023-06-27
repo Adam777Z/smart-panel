@@ -51,3 +51,7 @@ button {
 	color: lime;
 	font-size: 6rem;
 }
+
+.transparent {
+	color: transparent;
+}
