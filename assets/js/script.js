@@ -9,7 +9,7 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 	get_weather();
 	update_title();
 
-	setInterval(() => { get_time(); }, 1000);
+	setInterval(() => { get_time(); }, 500);
 
 	document.querySelector('#light-toggle').addEventListener('click', (event) => {
 		fetch('http://' + config['light_ip'] + '/cm?cmnd=Power%20toggle&user=admin&password=' + config['light_password'], {
@@ -21,6 +21,7 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 });
 
 var day_names = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
+var last_update_minute = null;
 
 function toggleFullScreen() {
 	if (!document.fullscreenElement && document.querySelector('body').requestFullscreen) {
@@ -37,10 +38,11 @@ function get_time() {
 	let ss = date.getSeconds();
 
 	// Update the others every minute
-	if (ss === 0) {
+	if (ss === 0 && last_update_minute !== mm) {
 		get_date();
 		get_temperature();
 		get_weather();
+		last_update_minute = mm;
 	}
 
 	if (HH < 10) {
