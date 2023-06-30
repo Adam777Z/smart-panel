@@ -7,21 +7,16 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 	get_date();
 	get_temperature();
 	get_weather();
-	get_light_state();
+	// get_light_state();
 	update_title();
 
 	setInterval(() => { get_time(); }, 500);
 
 	document.querySelector('#light-toggle').addEventListener('click', (event) => {
-		fetch('/proxy/', {
+		fetch('http://' + config['light_ip'] + '/cm?cmnd=Power%20toggle&user=admin&password=' + config['light_password'], {
 			'method': 'GET',
-			'headers': {
-				'X-Proxy-URL': 'http://' + config['light_ip'] + '/cm?cmnd=Power%20toggle&user=admin&password=' + config['light_password']
-			},
-			'cache': 'no-store'
-		})
-		.then((response) => {
-			get_light_state();
+			'cache': 'no-store',
+			'mode': 'no-cors'
 		});
 	});
 });
@@ -48,7 +43,7 @@ function get_time() {
 		get_date();
 		get_temperature();
 		get_weather();
-		get_light_state();
+		// get_light_state();
 		last_update_minute = mm;
 	}
 
@@ -85,11 +80,8 @@ function get_date() {
 }
 
 function get_temperature() {
-	fetch('/proxy/', {
+	fetch('https://corsproxy.io/?' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/measurements?apiKey=' + config['sensibo_api_key']), {
 		'method': 'GET',
-		'headers': {
-			'X-Proxy-URL': 'https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/measurements?apiKey=' + config['sensibo_api_key']
-		},
 		'cache': 'no-store'
 	})
 	.then((response) => {
