@@ -7,15 +7,21 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 	get_date();
 	get_temperature();
 	get_weather();
+	get_light_state();
 	update_title();
 
 	setInterval(() => { get_time(); }, 500);
 
 	document.querySelector('#light-toggle').addEventListener('click', (event) => {
-		fetch('http://' + config['light_ip'] + '/cm?cmnd=Power%20toggle&user=admin&password=' + config['light_password'], {
+		fetch('/proxy/', {
 			'method': 'GET',
-			'cache': 'no-store',
-			'mode': 'no-cors'
+			'headers': {
+				'X-Proxy-URL': 'http://' + config['light_ip'] + '/cm?cmnd=Power%20toggle&user=admin&password=' + config['light_password']
+			},
+			'cache': 'no-store'
+		})
+		.then((response) => {
+			get_light_state();
 		});
 	});
 });
@@ -42,6 +48,7 @@ function get_time() {
 		get_date();
 		get_temperature();
 		get_weather();
+		get_light_state();
 		last_update_minute = mm;
 	}
 
@@ -78,8 +85,11 @@ function get_date() {
 }
 
 function get_temperature() {
-	fetch('https://corsproxy.io/?' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/measurements?apiKey=' + config['sensibo_api_key']), {
+	fetch('/proxy/', {
 		'method': 'GET',
+		'headers': {
+			'X-Proxy-URL': 'https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/measurements?apiKey=' + config['sensibo_api_key']
+		},
 		'cache': 'no-store'
 	})
 	.then((response) => {
@@ -115,6 +125,33 @@ function get_weather() {
 		if (typeof data['main'] !== 'undefined' && typeof data['main']['temp'] !== 'undefined' && typeof data['weather'] !== 'undefined') {
 			document.querySelector('#weather').textContent = parseFloat(data['main']['temp'].toFixed(1)) + ' °C';
 			document.querySelector('#weather-icon').innerHTML = '<img src="https://openweathermap.org/img/wn/' + data['weather'][0]['icon'] + '@2x.png">';
+		}
+	})
+	.catch((error) => {
+		console.log(error);
+	});
+}
+
+function get_light_state() {
+	fetch('/proxy/', {
+		'method': 'GET',
+		'headers': {
+			'X-Proxy-URL': 'http://' + config['light_ip'] + '/cm?cmnd=Power&user=admin&password=' + config['light_password']
+		},
+		'cache': 'no-store'
+	})
+	.then((response) => {
+		if (response.ok) {
+			return response.json();
+		} else {
+			throw 'Error';
+		}
+	})
+	.then((data) => {
+		if (data['POWER'] == 'ON') {
+			document.querySelector('#light-toggle i').classList.replace('bi-lightbulb', 'bi-lightbulb-off');
+		} else if (data['POWER'] == 'OFF') {
+			document.querySelector('#light-toggle i').classList.replace('bi-lightbulb-off', 'bi-lightbulb');
 		}
 	})
 	.catch((error) => {
