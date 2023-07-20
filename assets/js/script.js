@@ -59,7 +59,7 @@ function get_time() {
 		ss = '0' + ss;
 	}
 
-	let time = HH + ':' + mm + ':' + ss;
+	let time = HH + '꞉' + mm + '꞉' + ss;
 
 	document.querySelector('#time').innerHTML = time;
 
