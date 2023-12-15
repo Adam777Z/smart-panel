@@ -80,8 +80,11 @@ function get_date() {
 }
 
 function get_temperature() {
-	fetch('https://corsproxy.io/?' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/measurements?apiKey=' + config['sensibo_api_key']), {
+	fetch('/proxy/', {
 		'method': 'GET',
+		'headers': {
+			'X-Proxy-URL': 'https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/measurements?apiKey=' + config['sensibo_api_key']
+		},
 		'cache': 'no-store'
 	})
 	.then((response) => {
