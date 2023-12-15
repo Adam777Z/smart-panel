@@ -4,5 +4,6 @@ var config = {
 	'sensibo_device': '',
 	'sensibo_api_key': '',
 	'openweathermap_city_id': '',
-	'openweathermap_api_key': ''
+	'openweathermap_api_key': '',
+	'proxy_url': ''
 }
