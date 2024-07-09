@@ -52,6 +52,10 @@ button {
 	font-size: 6rem;
 }
 
+button#ac-toggle {
+	color: cyan;
+}
+
 .transparent {
 	color: transparent;
 }

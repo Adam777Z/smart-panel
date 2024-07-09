@@ -8,6 +8,7 @@ Features:
 - Room temperature (from Air Conditioner)
 - Outside temperature (from Internet, as close as possible)
 - Weather condition
+- Air Conditioner (AC) control (toggle between on (auto 25 °C) & off)
 - Room light control (toggle on/off)
 - Touch/click on the time to toggle full screen mode
 
