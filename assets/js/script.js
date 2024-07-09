@@ -1,6 +1,6 @@
 document.addEventListener( 'DOMContentLoaded', (event) => {
 	document.querySelector('#time').addEventListener('click', (event) => {
-		toggleFullScreen();
+		toggle_full_screen();
 	});
 
 	get_time();
@@ -24,7 +24,7 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 var day_names = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
 var last_update_minute = null;
 
-function toggleFullScreen() {
+function toggle_full_screen() {
 	if (!document.fullscreenElement && document.querySelector('body').requestFullscreen) {
 		document.querySelector('body').requestFullscreen();
 	} else if (document.exitFullscreen) {
