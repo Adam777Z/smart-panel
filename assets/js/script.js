@@ -42,6 +42,19 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 			ac_on = false;
 		} else {
 			// AC is off, turn it on
+
+			let mode = 'auto';
+			let fan_speed = 'auto';
+			let target_temperature = 25;
+
+			if (temperature > 25) {
+				mode = 'cool';
+				target_temperature = 25;
+			} else if (temperature < 24) {
+				mode = 'heat';
+				target_temperature = 24;
+			}
+
 			fetch(url, {
 				'method': 'POST',
 				'headers': {
@@ -50,9 +63,9 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 				'body': JSON.stringify({
 					'acState': {
 						'on': true,
-						'mode': 'auto',
-						'fanLevel': 'auto',
-						'targetTemperature': 25,
+						'mode': mode,
+						'fanLevel': fan_speed,
+						'targetTemperature': target_temperature,
 						'temperatureUnit': 'C',
 						'swing': 'stopped'
 					}
@@ -66,6 +79,7 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 });
 
 var day_names = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
+var temperature = null;
 var ac_on = false;
 var last_update_minute = null;
 var last_update_hour = null;
@@ -146,7 +160,8 @@ function get_temperature() {
 	})
 	.then((data) => {
 		if (data['status'] == 'success') {
-			document.querySelector('#temperature').textContent = data['result'][0]['temperature'] + ' °C';
+			temperature = data['result'][0]['temperature'];
+			document.querySelector('#temperature').textContent = temperature + ' °C';
 		}
 	})
 	.catch((error) => {
