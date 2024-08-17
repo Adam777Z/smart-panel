@@ -8,7 +8,7 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 	get_temperature();
 	get_weather();
 	// get_light_state();
-	get_ac_state();
+	// get_ac_state();
 	update_title();
 
 	setInterval(() => { get_time(); }, 500);
@@ -21,66 +21,48 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 		});
 	});
 
-	document.querySelector('#ac-toggle').addEventListener('click', (event) => {
+	document.querySelectorAll('.ac-control-container .dropdown-item').forEach(e => e.addEventListener('click', (event2) => {
+		event2.preventDefault();
+
 		let url = 'https://' + config['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/acStates?apiKey=' + config['sensibo_api_key']);
 
-		if (ac_on) {
-			// AC is on, turn it off
-			fetch(url, {
-				'method': 'POST',
-				'headers': {
-					'Content-Type': 'application/json'
-				},
-				'body': JSON.stringify({
-					'acState': {
-						'on': false
-					}
-				}),
-				'cache': 'no-store'
-			});
+		let mode = event2.target.dataset['mode'];
+		let fan_speed = event2.target.dataset['fan'];
+		let target_temperature = parseInt(event2.target.dataset['temperature']);
 
-			ac_on = false;
+		if (mode == 'off') {
+			data = {
+				'acState': {
+					'on': false
+				}
+			};
 		} else {
-			// AC is off, turn it on
-
-			let mode = 'auto';
-			let fan_speed = 'auto';
-			let target_temperature = 25;
-
-			if (temperature > 25) {
-				mode = 'cool';
-				target_temperature = 25;
-			} else if (temperature < 24) {
-				mode = 'heat';
-				target_temperature = 24;
-			}
-
-			fetch(url, {
-				'method': 'POST',
-				'headers': {
-					'Content-Type': 'application/json'
-				},
-				'body': JSON.stringify({
-					'acState': {
-						'on': true,
-						'mode': mode,
-						'fanLevel': fan_speed,
-						'targetTemperature': target_temperature,
-						'temperatureUnit': 'C',
-						'swing': 'stopped'
-					}
-				}),
-				'cache': 'no-store'
-			});
-
-			ac_on = true;
+			data = {
+				'acState': {
+					'on': true,
+					'mode': mode,
+					'fanLevel': fan_speed,
+					'targetTemperature': target_temperature,
+					'temperatureUnit': 'C',
+					'swing': 'stopped'
+				}
+			};
 		}
-	});
+
+		fetch(url, {
+			'method': 'POST',
+			'headers': {
+				'Content-Type': 'application/json'
+			},
+			'body': JSON.stringify(data),
+			'cache': 'no-store'
+		});
+	}));
 });
 
 var day_names = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
 var temperature = null;
-var ac_on = false;
+// var ac_on = false;
 var last_update_minute = null;
 var last_update_hour = null;
 
@@ -104,15 +86,14 @@ function get_time() {
 		get_temperature();
 		get_weather();
 		// get_light_state();
-		// get_ac_state();
 		last_update_minute = mm;
 	}
 
 	// Update every hour
-	if (ss === 0 && mm === 0 && last_update_hour !== HH) {
-		get_ac_state();
+	/* if (ss === 0 && mm === 0 && last_update_hour !== HH) {
+		// get_ac_state();
 		last_update_hour = HH;
-	}
+	} */
 
 	if (HH < 10) {
 		HH = '<span class="transparent">0</span>' + HH;
@@ -192,7 +173,7 @@ function get_weather() {
 	});
 }
 
-function get_light_state() {
+/* function get_light_state() {
 	fetch('/proxy/', {
 		'method': 'GET',
 		'headers': {
@@ -217,9 +198,9 @@ function get_light_state() {
 	.catch((error) => {
 		console.log(error);
 	});
-}
+} */
 
-function get_ac_state() {
+/* function get_ac_state() {
 	fetch('https://' + config['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/acStates?apiKey=' + config['sensibo_api_key']), {
 		'method': 'GET',
 		'cache': 'no-store'
@@ -239,7 +220,7 @@ function get_ac_state() {
 	.catch((error) => {
 		console.log(error);
 	});
-}
+} */
 
 function update_title() {
 	document.title = 'Smart Panel • ' + document.querySelector('#date').textContent + ' ' + document.querySelector('#time').textContent.replace(/^0{1}/, '') + ' • ' + document.querySelector('#temperature').textContent + ' • ' + document.querySelector('#weather').textContent;
