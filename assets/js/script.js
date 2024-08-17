@@ -29,6 +29,7 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 		let mode = event2.target.dataset['mode'];
 		let fan_speed = event2.target.dataset['fan'];
 		let target_temperature = parseInt(event2.target.dataset['temperature']);
+		let delay = typeof event2.target.dataset['delay'] !== 'undefined' ? parseInt(event2.target.dataset['delay']) * 60 * 1000 : 0;
 
 		if (mode == 'off') {
 			data = {
@@ -49,14 +50,19 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 			};
 		}
 
-		fetch(url, {
-			'method': 'POST',
-			'headers': {
-				'Content-Type': 'application/json'
-			},
-			'body': JSON.stringify(data),
-			'cache': 'no-store'
-		});
+		setTimeout(() => {
+			// Send command multiple times to make sure it is received by the AC
+			for (let i = 0; i < 5; i++) {
+				fetch(url, {
+					'method': 'POST',
+					'headers': {
+						'Content-Type': 'application/json'
+					},
+					'body': JSON.stringify(data),
+					'cache': 'no-store'
+				});
+			}
+		}, delay);
 	}));
 });
 
