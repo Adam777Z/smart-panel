@@ -26,10 +26,12 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 
 		let url = 'https://' + config['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/acStates?apiKey=' + config['sensibo_api_key']);
 
-		let mode = event2.target.dataset['mode'];
-		let fan_speed = event2.target.dataset['fan'];
-		let target_temperature = parseInt(event2.target.dataset['temperature']);
+		let mode = typeof event2.target.dataset['mode'] !== 'undefined' ? event2.target.dataset['mode'] : 'auto'; // Mode (auto/cool/heat/dry/fan/off)
+		let fan_speed = typeof event2.target.dataset['fan'] !== 'undefined' ? event2.target.dataset['fan'] : 'auto'; // Fan speed (auto/low/medium/high)
+		let target_temperature = typeof event2.target.dataset['temperature'] !== 'undefined' ? parseInt(event2.target.dataset['temperature']) : 25; // Target temperature
 		let delay = typeof event2.target.dataset['delay'] !== 'undefined' ? parseInt(event2.target.dataset['delay']) * 60 * 1000 : 0;
+
+		let data;
 
 		if (mode == 'off') {
 			data = {
@@ -56,7 +58,8 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 				fetch(url, {
 					'method': 'POST',
 					'headers': {
-						'Content-Type': 'application/json'
+						'Content-Type': 'application/json',
+						'Accept-Encoding': 'gzip'
 					},
 					'body': JSON.stringify(data),
 					'cache': 'no-store'
