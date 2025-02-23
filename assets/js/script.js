@@ -205,41 +205,14 @@ function get_weather() {
 	});
 } */
 
-async function toggle_light(maxRetries = 5, delay = 2000, timeout = 5000) {
+function toggle_light() {
 	const url = 'http://' + config['light_ip'] + '/cm?cmnd=Power%20toggle&user=admin&password=' + config['light_password'];
 
-	for (let attempt = 1; attempt <= maxRetries; attempt++) {
-		try {
-			// Set up a timeout promise
-			const timeoutPromise = new Promise((_, reject) =>
-				setTimeout(() => reject(new Error('Request timed out')), timeout)
-			);
-
-			// Send the GET request to toggle the light status, with a timeout
-			const response = await Promise.race([
-				fetch(url, {
-					method: 'GET', // Using GET to trigger the toggle action
-					cache: 'no-store', // Ensures the browser does not cache the response
-					mode: 'no-cors' // For cross-origin requests
-				}),
-				timeoutPromise // Timeout race condition
-			]);
-
-			// Just break the loop after sending the request, since the light toggles regardless of the status
-			// console.log(`Light toggled successfully on attempt ${attempt}.`);
-			return; // Exit the function entirely after success
-		} catch (error) {
-			console.log(`Error on attempt ${attempt}: ${error.message}`);
-		}
-
-		// Wait before retrying
-		if (attempt < maxRetries) {
-			console.log(`Retrying in ${delay / 1000} seconds...`);
-			await new Promise(resolve => setTimeout(resolve, delay)); // Delay before retrying
-		}
-	}
-
-	console.log('Max retries reached. Could not toggle light.');
+	fetch(url, {
+		'method': 'GET',
+		'cache': 'no-store',
+		'mode': 'no-cors'
+	});
 }
 
 /* function get_ac_state() {
