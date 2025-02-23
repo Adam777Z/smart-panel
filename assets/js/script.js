@@ -206,9 +206,7 @@ function get_weather() {
 } */
 
 function toggle_light() {
-	const url = 'http://' + config['light_ip'] + '/cm?cmnd=Power%20toggle&user=admin&password=' + config['light_password'];
-
-	fetch(url, {
+	fetch('http://' + config['light_ip'] + '/cm?cmnd=Power%20toggle&user=admin&password=' + config['light_password'], {
 		'method': 'GET',
 		'cache': 'no-store',
 		'mode': 'no-cors'
