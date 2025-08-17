@@ -49,18 +49,15 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 		}
 
 		setTimeout(() => {
-			// Send command multiple times to make sure it is received by the AC
-			for (let i = 0; i < 5; i++) {
-				fetch(url, {
-					'method': 'POST',
-					'headers': {
-						'Content-Type': 'application/json',
-						'Accept-Encoding': 'gzip'
-					},
-					'body': JSON.stringify(data),
-					'cache': 'no-store'
-				});
-			}
+			fetch(url, {
+				'method': 'POST',
+				'headers': {
+					'Content-Type': 'application/json',
+					'Accept-Encoding': 'gzip'
+				},
+				'body': JSON.stringify(data),
+				'cache': 'no-store'
+			});
 		}, delay);
 	}));
 });
