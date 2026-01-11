@@ -1,4 +1,4 @@
-var config = {
+const config = {
 	'light_ip': '',
 	'light_password': '',
 	'sensibo_device': '',
