@@ -15,27 +15,25 @@ body {
 }
 
 #time {
-	font-size: 16.7vw;
+	font-size: 25vw;
 	color: white;
 }
 
 #date {
-	font-size: 6.7vw;
+	font-size: 11vw;
 	color: yellow;
 }
 
 #day {
-	font-size: 5vw;
+	font-size: 7vw;
 	color: #00bfff;
 }
 
 #temperature {
-	font-size: 6.7vw;
 	color: red;
 }
 
 #weather {
-	font-size: 5vw;
 	color: orange;
 }
 
@@ -51,7 +49,6 @@ button {
 	background: none;
 	border: 0;
 	color: lime;
-	font-size: 5vw;
 	transition: transform 0.1s ease-out;
 }
 
@@ -62,6 +59,12 @@ button#ac-control {
 /* Interactive Feedback: Gives all buttons a physical "press" feel */
 button:active {
 	transform: scale(0.95); /* Shrinks slightly when active */
+}
+
+#temperature,
+#weather,
+button {
+	font-size: 9vw;
 }
 
 .transparent {
