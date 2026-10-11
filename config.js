@@ -1,9 +1,10 @@
 const config = {
 	'light_ip': '',
+	'light_username': '',
 	'light_password': '',
-	'sensibo_device': '',
 	'sensibo_api_key': '',
-	'openweathermap_city_id': '',
+	'sensibo_device_id': '',
 	'openweathermap_api_key': '',
+	'openweathermap_city_id': '',
 	'proxy_url': ''
 }

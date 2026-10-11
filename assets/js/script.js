@@ -20,7 +20,7 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 	document.querySelectorAll('.ac-control-container .dropdown-item').forEach(e => e.addEventListener('click', (event2) => {
 		event2.preventDefault();
 
-		let url = 'https://' + config['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/acStates?apiKey=' + config['sensibo_api_key']);
+		let url = 'https://' + config['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device_id'] + '/acStates?apiKey=' + config['sensibo_api_key']);
 
 		let mode = typeof event2.target.dataset['mode'] !== 'undefined' ? event2.target.dataset['mode'] : 'auto'; // Mode (auto/cool/heat/dry/fan/off)
 		let fan_speed = typeof event2.target.dataset['fan'] !== 'undefined' ? event2.target.dataset['fan'] : 'auto'; // Fan speed (auto/low/medium/high)
@@ -130,7 +130,7 @@ function get_date() {
 }
 
 function get_temperature() {
-	fetch('https://' + config['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/measurements?apiKey=' + config['sensibo_api_key']), {
+	fetch('https://' + config['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device_id'] + '/measurements?apiKey=' + config['sensibo_api_key']), {
 		'method': 'GET',
 		'cache': 'no-store'
 	})
@@ -179,7 +179,7 @@ function get_weather() {
 	fetch('/proxy/', {
 		'method': 'GET',
 		'headers': {
-			'X-Proxy-URL': 'http://' + config['light_ip'] + '/cm?cmnd=Power&user=admin&password=' + config['light_password']
+			'X-Proxy-URL': 'http://' + config['light_ip'] + '/cm?cmnd=Power&user=' + config['light_username'] + '&password=' + config['light_password']
 		},
 		'cache': 'no-store'
 	})
@@ -203,7 +203,7 @@ function get_weather() {
 } */
 
 function toggle_light() {
-	fetch('http://' + config['light_ip'] + '/cm?cmnd=Power%20toggle&user=admin&password=' + config['light_password'], {
+	fetch('http://' + config['light_ip'] + '/cm?cmnd=Power%20toggle&user=' + config['light_username'] + '&password=' + config['light_password'], {
 		'method': 'GET',
 		'cache': 'no-store',
 		'mode': 'no-cors'
@@ -211,7 +211,7 @@ function toggle_light() {
 }
 
 /* function get_ac_state() {
-	fetch('https://' + config['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device'] + '/acStates?apiKey=' + config['sensibo_api_key']), {
+	fetch('https://' + config['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device_id'] + '/acStates?apiKey=' + config['sensibo_api_key']), {
 		'method': 'GET',
 		'cache': 'no-store'
 	})
