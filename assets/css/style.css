@@ -73,11 +73,30 @@ button#ac-control {
 	gap: 0.25rem;
 }
 
+.github-link,
 .settings-button {
 	color: #d3d3d3;
 	font-size: 1rem;
 	line-height: 1;
 	padding: 0.35rem 0.5rem;
+}
+
+.github-link,
+.settings-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+}
+
+.github-link:hover,
+.github-link:focus,
+.github-link:active,
+.settings-button:hover,
+.settings-button:focus,
+.settings-button:active {
+	color: #f0f0f0;
+	text-decoration: none;
 }
 
 .modal .btn-close {
