@@ -1,6 +1,53 @@
+const settings_storage_key = 'smart_panel_settings';
+const default_settings = {
+	'light_ip': '',
+	'light_username': '',
+	'light_password': '',
+	'sensibo_api_key': '',
+	'sensibo_device_id': '',
+	'openweathermap_api_key': '',
+	'openweathermap_city_id': '',
+	'proxy_url': ''
+};
+var settings = {
+	...default_settings,
+	...JSON.parse(localStorage.getItem(settings_storage_key) || '{}')
+};
+
+function update_control_visibility() {
+	const ac_configured = Boolean(settings['proxy_url']?.trim() && settings['sensibo_device_id']?.trim() && settings['sensibo_api_key']?.trim());
+	const light_configured = Boolean(settings['light_ip']?.trim() && settings['light_username']?.trim() && settings['light_password']?.trim());
+
+	document.querySelector('.ac-control-container').hidden = !ac_configured;
+	document.querySelector('#light-toggle').hidden = !light_configured;
+	document.querySelector('.ac-and-light-controls').hidden = !ac_configured && !light_configured;
+}
+
 document.addEventListener( 'DOMContentLoaded', (event) => {
 	document.querySelector('#time').addEventListener('click', (event) => {
 		toggle_full_screen();
+	});
+
+	document.querySelectorAll('#settings-form [name]').forEach((input) => {
+		input.value = settings[input.name] || '';
+	});
+	update_control_visibility();
+
+	document.querySelector('#settings-form').addEventListener('submit', (event) => {
+		event.preventDefault();
+		const form_data = new FormData(event.currentTarget);
+		Object.keys(default_settings).forEach((key) => {
+			settings[key] = form_data.get(key) || '';
+		});
+		localStorage.setItem(settings_storage_key, JSON.stringify(settings));
+		update_control_visibility();
+		bootstrap.Modal.getOrCreateInstance(document.querySelector('#settings-modal')).hide();
+		get_temperature();
+		get_weather();
+	});
+
+	document.querySelectorAll('[data-bs-toggle="popover"]').forEach((element) => {
+		new bootstrap.Popover(element);
 	});
 
 	get_time();
@@ -19,8 +66,11 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 
 	document.querySelectorAll('.ac-control-container .dropdown-item').forEach(e => e.addEventListener('click', (event2) => {
 		event2.preventDefault();
+		if (!settings['proxy_url'] || !settings['sensibo_device_id'] || !settings['sensibo_api_key']) {
+			return;
+		}
 
-		let url = 'https://' + config['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device_id'] + '/acStates?apiKey=' + config['sensibo_api_key']);
+		let url = settings['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + settings['sensibo_device_id'] + '/acStates?apiKey=' + settings['sensibo_api_key']);
 
 		let mode = typeof event2.target.dataset['mode'] !== 'undefined' ? event2.target.dataset['mode'] : 'auto'; // Mode (auto/cool/heat/dry/fan/off)
 		let fan_speed = typeof event2.target.dataset['fan'] !== 'undefined' ? event2.target.dataset['fan'] : 'auto'; // Fan speed (auto/low/medium/high)
@@ -130,7 +180,11 @@ function get_date() {
 }
 
 function get_temperature() {
-	fetch('https://' + config['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device_id'] + '/measurements?apiKey=' + config['sensibo_api_key']), {
+	if (!settings['proxy_url'] || !settings['sensibo_device_id'] || !settings['sensibo_api_key']) {
+		return;
+	}
+
+	fetch(settings['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + settings['sensibo_device_id'] + '/measurements?apiKey=' + settings['sensibo_api_key']), {
 		'method': 'GET',
 		'cache': 'no-store'
 	})
@@ -153,7 +207,11 @@ function get_temperature() {
 }
 
 function get_weather() {
-	fetch('https://api.openweathermap.org/data/2.5/weather?id=' + config['openweathermap_city_id'] + '&units=metric&lang=en&appid=' + config['openweathermap_api_key'], {
+	if (!settings['openweathermap_city_id'] || !settings['openweathermap_api_key']) {
+		return;
+	}
+
+	fetch('https://api.openweathermap.org/data/2.5/weather?id=' + settings['openweathermap_city_id'] + '&units=metric&lang=en&appid=' + settings['openweathermap_api_key'], {
 		'method': 'GET',
 		'cache': 'no-store'
 	})
@@ -179,7 +237,7 @@ function get_weather() {
 	fetch('/proxy/', {
 		'method': 'GET',
 		'headers': {
-			'X-Proxy-URL': 'http://' + config['light_ip'] + '/cm?cmnd=Power&user=' + config['light_username'] + '&password=' + config['light_password']
+			'X-Proxy-URL': 'http://' + settings['light_ip'] + '/cm?cmnd=Power&user=' + settings['light_username'] + '&password=' + settings['light_password']
 		},
 		'cache': 'no-store'
 	})
@@ -203,7 +261,11 @@ function get_weather() {
 } */
 
 function toggle_light() {
-	fetch('http://' + config['light_ip'] + '/cm?cmnd=Power%20toggle&user=' + config['light_username'] + '&password=' + config['light_password'], {
+	if (!settings['light_ip'] || !settings['light_username'] || !settings['light_password']) {
+		return;
+	}
+
+	fetch('http://' + settings['light_ip'] + '/cm?cmnd=Power%20toggle&user=' + settings['light_username'] + '&password=' + settings['light_password'], {
 		'method': 'GET',
 		'cache': 'no-store',
 		'mode': 'no-cors'
@@ -211,7 +273,7 @@ function toggle_light() {
 }
 
 /* function get_ac_state() {
-	fetch('https://' + config['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + config['sensibo_device_id'] + '/acStates?apiKey=' + config['sensibo_api_key']), {
+	fetch(settings['proxy_url'] + '/?url=' + encodeURIComponent('https://home.sensibo.com/api/v2/pods/' + settings['sensibo_device_id'] + '/acStates?apiKey=' + settings['sensibo_api_key']), {
 		'method': 'GET',
 		'cache': 'no-store'
 	})
