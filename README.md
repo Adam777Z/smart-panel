@@ -1,4 +1,5 @@
 # Smart Panel
+
 Smart Panel Web App
 
 Features:
@@ -6,7 +7,7 @@ Features:
 - Date
 - Day name
 - Room temperature (from Air Conditioner)
-- Outside temperature (from Internet, as close as possible)
+- Outdoor temperature (from the Internet, nearest location)
 - Weather condition
 - Air Conditioner (AC) control (toggle between on (auto 25 °C) & off)
 - Room light control (toggle on/off)
