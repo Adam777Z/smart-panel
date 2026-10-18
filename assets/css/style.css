@@ -73,6 +73,10 @@ button#ac-control {
 	gap: 0.25rem;
 }
 
+body:fullscreen .top-right {
+	display: none;
+}
+
 .github-link,
 .settings-button {
 	color: #d3d3d3;
