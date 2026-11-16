@@ -170,3 +170,24 @@ button {
 .transparent {
 	color: transparent;
 }
+
+/* Fluid sizing keeps the row full while reserving a small gap before controls. */
+@media (max-width: 900px) {
+	div.d-flex.justify-content-between.align-items-end {
+		column-gap: 0.5rem;
+	}
+
+	#temperature,
+	#weather,
+	.ac-and-light-controls button {
+		font-size: clamp(0px, calc(8.4vw - 8.5px), 7.5vw);
+	}
+
+	.humidity {
+		font-size: clamp(0px, calc(4.48vw - 4.53px), 4vw);
+	}
+
+	#weather-icon img {
+		width: clamp(0px, calc(5.824vw - 5.893px), 5.2vw);
+	}
+}
