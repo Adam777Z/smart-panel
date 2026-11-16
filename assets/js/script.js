@@ -13,14 +13,21 @@ var settings = {
 	...default_settings,
 	...JSON.parse(localStorage.getItem(settings_storage_key) || '{}')
 };
+var demo_mode = false;
 
 function update_control_visibility() {
-	const ac_configured = Boolean(settings['proxy_url']?.trim() && settings['sensibo_device_id']?.trim() && settings['sensibo_api_key']?.trim());
-	const light_configured = Boolean(settings['light_ip']?.trim() && settings['light_username']?.trim() && settings['light_password']?.trim());
+	const ac_configured = demo_mode || Boolean(settings['proxy_url']?.trim() && settings['sensibo_device_id']?.trim() && settings['sensibo_api_key']?.trim());
+	const light_configured = demo_mode || Boolean(settings['light_ip']?.trim() && settings['light_username']?.trim() && settings['light_password']?.trim());
 
 	document.querySelector('.ac-control-container').hidden = !ac_configured;
 	document.querySelector('#light-toggle').hidden = !light_configured;
 	document.querySelector('.ac-and-light-controls').hidden = !ac_configured && !light_configured;
+}
+
+function update_demo_mode_button() {
+	const button = document.querySelector('#demo-mode-toggle');
+	button.textContent = demo_mode ? 'Disable demo mode' : 'Enable demo mode';
+	button.setAttribute('aria-pressed', String(demo_mode));
 }
 
 document.addEventListener( 'DOMContentLoaded', (event) => {
@@ -32,6 +39,24 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 		input.value = settings[input.name] || '';
 	});
 	update_control_visibility();
+	update_demo_mode_button();
+
+	document.querySelector('#demo-mode-toggle').addEventListener('click', () => {
+		demo_mode = !demo_mode;
+		update_demo_mode_button();
+		update_control_visibility();
+		bootstrap.Modal.getOrCreateInstance(document.querySelector('#settings-modal')).hide();
+
+		if (demo_mode) {
+			set_demo_data();
+		} else {
+			clear_demo_data();
+			get_temperature();
+			get_weather();
+		}
+
+		update_title();
+	});
 
 	document.querySelector('#settings-form').addEventListener('submit', (event) => {
 		event.preventDefault();
@@ -52,8 +77,12 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 
 	get_time();
 	get_date();
-	get_temperature();
-	get_weather();
+	if (demo_mode) {
+		set_demo_data();
+	} else {
+		get_temperature();
+		get_weather();
+	}
 	// get_light_state();
 	// get_ac_state();
 	update_title();
@@ -66,7 +95,7 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 
 	document.querySelectorAll('.ac-control-container .dropdown-item').forEach(e => e.addEventListener('click', (event2) => {
 		event2.preventDefault();
-		if (!settings['proxy_url'] || !settings['sensibo_device_id'] || !settings['sensibo_api_key']) {
+		if (demo_mode || !settings['proxy_url'] || !settings['sensibo_device_id'] || !settings['sensibo_api_key']) {
 			return;
 		}
 
@@ -114,6 +143,7 @@ document.addEventListener( 'DOMContentLoaded', (event) => {
 
 var day_names = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
 var temperature = null;
+var demo_weather_icon = null;
 // var ac_on = false;
 var last_update_minute = null;
 var last_update_hour = null;
@@ -163,6 +193,10 @@ function get_time() {
 
 	document.querySelector('#time').innerHTML = time;
 
+	if (demo_mode) {
+		update_demo_weather_icon();
+	}
+
 	update_title();
 }
 
@@ -180,7 +214,7 @@ function get_date() {
 }
 
 function get_temperature() {
-	if (!settings['proxy_url'] || !settings['sensibo_device_id'] || !settings['sensibo_api_key']) {
+	if (demo_mode || !settings['proxy_url'] || !settings['sensibo_device_id'] || !settings['sensibo_api_key']) {
 		return;
 	}
 
@@ -199,6 +233,9 @@ function get_temperature() {
 		if (data['status'] == 'success') {
 			temperature = data['result'][0]['temperature'];
 			document.querySelector('#temperature').textContent = temperature + ' °C';
+			if (typeof data['result'][0]['humidity'] !== 'undefined') {
+				document.querySelector('#humidity').textContent = Math.round(data['result'][0]['humidity']) + '%';
+			}
 		}
 	})
 	.catch((error) => {
@@ -207,7 +244,7 @@ function get_temperature() {
 }
 
 function get_weather() {
-	if (!settings['openweathermap_city_id'] || !settings['openweathermap_api_key']) {
+	if (demo_mode || !settings['openweathermap_city_id'] || !settings['openweathermap_api_key']) {
 		return;
 	}
 
@@ -225,12 +262,43 @@ function get_weather() {
 	.then((data) => {
 		if (typeof data['main'] !== 'undefined' && typeof data['main']['temp'] !== 'undefined' && typeof data['weather'] !== 'undefined') {
 			document.querySelector('#weather').textContent = parseFloat(data['main']['temp'].toFixed(1)) + ' °C';
+			if (typeof data['main']['humidity'] !== 'undefined') {
+				document.querySelector('#weather-humidity').textContent = Math.round(data['main']['humidity']) + '%';
+			}
 			document.querySelector('#weather-icon').innerHTML = '<img src="https://openweathermap.org/img/wn/' + data['weather'][0]['icon'] + '@2x.png">';
 		}
 	})
 	.catch((error) => {
 		console.log(error);
 	});
+}
+
+function set_demo_data() {
+	document.querySelector('#temperature').textContent = '25.1 °C';
+	document.querySelector('#humidity').textContent = '50%';
+	document.querySelector('#weather').textContent = '27.1 °C';
+	document.querySelector('#weather-humidity').textContent = '60%';
+	update_demo_weather_icon();
+}
+
+function update_demo_weather_icon() {
+	const hour = new Date().getHours();
+	const icon = hour >= 6 && hour < 18 ? '01d' : '01n';
+	if (icon === demo_weather_icon) {
+		return;
+	}
+
+	demo_weather_icon = icon;
+	document.querySelector('#weather-icon').innerHTML = '<img src="https://openweathermap.org/img/wn/' + icon + '@2x.png" alt="Clear sky">';
+}
+
+function clear_demo_data() {
+	document.querySelector('#temperature').textContent = '';
+	document.querySelector('#humidity').textContent = '';
+	document.querySelector('#weather').textContent = '';
+	document.querySelector('#weather-humidity').textContent = '';
+	document.querySelector('#weather-icon').textContent = '';
+	demo_weather_icon = null;
 }
 
 /* function get_light_state() {
@@ -261,7 +329,7 @@ function get_weather() {
 } */
 
 function toggle_light() {
-	if (!settings['light_ip'] || !settings['light_username'] || !settings['light_password']) {
+	if (demo_mode || !settings['light_ip'] || !settings['light_username'] || !settings['light_password']) {
 		return;
 	}
 

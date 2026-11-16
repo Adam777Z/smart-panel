@@ -6,9 +6,10 @@ Features:
 - Time
 - Date
 - Day name
-- Room temperature (from Air Conditioner)
-- Outdoor temperature (from the Internet, nearest location)
+- Room temperature and humidity (from Air Conditioner)
+- Outdoor temperature and humidity (from the Internet, nearest location)
 - Weather condition
+- Demo mode with sample readings and preview controls
 - Air Conditioner (AC) control (toggle between on (auto 25 °C) & off)
 - Room light control (toggle on/off)
 - Touch/click on the time to toggle full screen mode

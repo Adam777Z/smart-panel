@@ -37,6 +37,29 @@ body {
 	color: orange;
 }
 
+div.d-flex.justify-content-between.align-items-end {
+	max-width: calc(100vw - 2rem);
+	margin-left: auto;
+	margin-right: auto;
+}
+
+div.d-flex.justify-content-between.align-items-end > .d-flex.justify-content-center.align-items-baseline {
+	white-space: nowrap;
+}
+
+.humidity {
+	font-size: 4vw;
+	margin-left: 0.5em;
+}
+
+#humidity {
+	color: #4169e1;
+}
+
+#weather-humidity {
+	color: #1e90ff;
+}
+
 #weather-icon img {
 	display: inline-block;
 	width: 5.2vw;
@@ -129,10 +152,19 @@ button:active {
 	transform: scale(0.95); /* Shrinks slightly when active */
 }
 
-#temperature,
-#weather,
 button {
 	font-size: 9vw;
+}
+
+#temperature,
+#weather,
+.ac-and-light-controls button {
+	font-size: 7.5vw;
+}
+
+#temperature,
+#weather {
+	white-space: nowrap;
 }
 
 .transparent {
