@@ -363,5 +363,11 @@ function toggle_light() {
 } */
 
 function update_title() {
-	document.title = 'Smart Panel • ' + document.querySelector('#date').textContent + ' ' + document.querySelector('#time').textContent.replace(/^0{1}/, '') + ' • ' + document.querySelector('#temperature').textContent + ' • ' + document.querySelector('#weather').textContent;
+	const title_parts = [
+		'Smart Panel • ' + document.querySelector('#date').textContent + ' ' + document.querySelector('#time').textContent.replace(/^0{1}/, ''),
+		document.querySelector('#temperature').textContent.trim(),
+		document.querySelector('#weather').textContent.trim()
+	].filter(Boolean);
+
+	document.title = title_parts.join(' • ');
 }
